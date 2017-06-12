@@ -1,3 +1,20 @@
+"""Testing Factories for creating database objects in unit tests
+
+If init_engine is called first, objects are instantiated in the session at
+module level. Example:
+
+```
+from results_schema.factories import EvaluationFactory, session, init_engine
+
+engine = # your engine creation code here
+init_engine(engine)
+EvaluationFactory()
+session.commit()
+
+results = engine.execute('select * from results.evaluations')
+```
+"""
+
 import factory 
 import factory.fuzzy
 from results_schema import schema
@@ -40,7 +57,6 @@ class ModelFactory(factory.alchemy.SQLAlchemyModelFactory):
     batch_comment = ''
     config = {}
     experiment_rel = factory.SubFactory(ExperimentFactory)
-    #experiment_hash = factory.LazyFunction(lambda: ExperimentFactory().experiment_hash)
     train_end_time = factory.fuzzy.FuzzyNaiveDateTime(datetime(2008, 1, 1))
     test = False
     train_matrix_uuid = factory.fuzzy.FuzzyText()

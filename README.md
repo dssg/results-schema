@@ -42,7 +42,7 @@ This command will create a 'results' schema and the necessary tables.
 
 When you want to create rows of these results tables for a unit test, you can use the included factories to make this easier and with less boilerplate.  Factories allow you to only specify the attribute that are important to your test, and choose reasonable defaults for all other attributes. results_schema uses [FactoryBoy](http://factoryboy.readthedocs.io/en/latest/index.html) to accomplish this.
 
-A simple example is to just instantiate an EvaluationFactory. Evaluations depend on Models, which depend on both ModelGroups and Experiments. So instantiating an EvaluationFactory actually creates four objects in the database.
+A simple example is to just instantiate an `EvaluationFactory`. `Evaluations` depend on `Models`, which depend on both `ModelGroups` and `Experiments`. So instantiating an `EvaluationFactory` actually creates four objects in the database.
 
 ```
 from results_schema.factories import EvaluationFactory, session
@@ -51,12 +51,16 @@ init_engine(engine)
 EvaluationFactory()
 session.commit()
 
-results = engine.execute('select * from results.evaluations')
+results = engine.execute('select model_id, metric, parameter, value from results.evaluations')
 for row in results:
 	print(row)
 ```
 
-This is all well and good, but often your tests will require some more control over the relationships between the objects you create, like creating different evaluations keyed to the same model. You do this by creating the Model using a factory first and then passing that to the Evaluations factories:
+```
+(1, 'precision@', '100_abs', Decimal('0.76'))
+```
+
+This is all well and good, but often your tests will require some more control over the relationships between the objects you create, like creating different evaluations keyed to the same model. You do this by instantiating a `ModelFactory` first and then passing that to each `EvaluationFactory`:
 
 ```
 init_engine(engine)
@@ -73,7 +77,12 @@ for metric, value in [
 		value=value
 	)
 session.commit()
-results = engine.execute('select * from results.evaluations')
+results = engine.execute('select model_id, metric, parameter, value from results.evaluations')
 for row in results:
 	print(row)
+```
+
+```
+(1, 'precision@', '100_abs', Decimal('0.4'))
+(1, 'recall@', '100_abs', Decimal('0.3'))
 ```
