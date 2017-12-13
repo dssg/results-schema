@@ -1,6 +1,8 @@
 # results-schema
 Store results of modeling runs in a relational database
 
+**Note**: Results-schema is now a bundled component of [Triage](https://github.com/dssg/triage), and future development will take place there. To utilize results-schema within your custom pipeline, you may still import it from there.
+
 ## Quick Start
 
 1. Install
